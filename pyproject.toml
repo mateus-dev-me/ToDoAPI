@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "todoapi"
+version = "0.1.0"
+description = "Uma API de lista de tarefas."
+authors = ["mateus-dev-me <mateusmartinsipu2@gmail.com>"]
+readme = "README.md"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+python_files = ["test_*.py", "*_test.py"]
+addposts = "-p no:warning"
+
+[tool.coverage.run]
+omit = [
+    "__init__.py",
+    "manage.py",
+    "**/config/*",
+    "**/migrations/*",
+    "conftest.py",
+    "**/_tests/*",
+]
+
+[tool.poetry.dependencies]
+python = "3.12.*"
+fastapi = "^0.111.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.4.9"
+pytest = "^8.2.2"
+pytest-cov = "^5.0.0"
+taskipy = "^1.12.2"
+
+[tool.ruff]
+extend-exclude = [
+  ".venv",
+  "migrations",
+  ".ruff_cache",
+  "_tests",
+]
+line-length = 79
+indent-width = 4
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+docstring-code-format = true
+
+[tool.taskipy.tasks]
+run = "fastapi dev app/main.py"
+
+pre_test = "task lint"
+test = "pytest --cov=app -vv"
+post_test = "coverage html"
+
+lint = "ruff check . && ruff check . --diff"
+format= "ruff check . --fix && ruff format ."
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
